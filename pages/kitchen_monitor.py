@@ -1,6 +1,4 @@
 import streamlit as st
-import random
-import time
 
 st.set_page_config(
     page_title="Monitor Inteligente",
@@ -36,44 +34,41 @@ h1, h2, h3 {
 st.title("🔥 SmartKitchen Monitor")
 
 st.markdown("""
-Sistema inteligente de monitoreo de cocina en tiempo real.
+Sistema inteligente de monitoreo de cocina.
 """)
 
-# ===== TEMPERATURA SIMULADA =====
-temperatura = random.randint(20, 100)
+# ===== ENTRADA MANUAL =====
+st.subheader("🌡️ Temperatura de Wokwi")
+
+temperatura = st.slider(
+    "Selecciona la temperatura actual",
+    0,
+    100,
+    25
+)
 
 # ===== TARJETAS =====
 col1, col2 = st.columns(2)
 
 with col1:
 
-    st.markdown("""
-    <div class="card">
-    <h3>🌡️ Temperatura Actual</h3>
-    </div>
-    """, unsafe_allow_html=True)
-
     st.metric(
-        label="Temperatura",
+        label="🌡️ Temperatura Actual",
         value=f"{temperatura} °C"
     )
 
 with col2:
 
-    st.markdown("""
-    <div class="card">
-    <h3>📊 Nivel de Calor</h3>
-    </div>
-    """, unsafe_allow_html=True)
+    st.metric(
+        label="📊 Nivel de Calor",
+        value=f"{temperatura}%"
+    )
 
-    st.progress(temperatura)
+# ===== BARRA =====
+st.progress(temperatura)
 
 # ===== ALERTAS =====
-st.markdown("""
-<div class="card">
-<h3>🚨 Estado de la Cocina</h3>
-</div>
-""", unsafe_allow_html=True)
+st.subheader("🚨 Estado de la Cocina")
 
 if temperatura < 50:
 
@@ -97,34 +92,27 @@ else:
     st.write("🚨 Buzzer activado")
 
 # ===== SENSORES =====
-st.markdown("""
-<div class="card">
-<h3>📡 Sensores Inteligentes</h3>
-</div>
-""", unsafe_allow_html=True)
+st.subheader("📡 Sensores Inteligentes")
 
-sensor1, sensor2, sensor3 = st.columns(3)
+col3, col4, col5 = st.columns(3)
 
-with sensor1:
+with col3:
     st.info("ESP32 conectado")
 
-with sensor2:
+with col4:
     st.info("Sensor de temperatura activo")
 
-with sensor3:
+with col5:
     st.info("Sistema SmartKitchen operativo")
 
 # ===== HISTORIAL =====
-st.markdown("""
-<div class="card">
-<h3>📈 Historial de Temperatura</h3>
-</div>
-""", unsafe_allow_html=True)
+st.subheader("📈 Historial de Temperatura")
 
-datos = [random.randint(20, 100) for _ in range(15)]
+datos = [
+    temperatura - 10,
+    temperatura - 5,
+    temperatura,
+    temperatura + 3
+]
 
 st.line_chart(datos)
-
-# ===== AUTO REFRESH =====
-time.sleep(2)
-st.rerun()
