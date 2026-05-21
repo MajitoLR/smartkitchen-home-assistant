@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ===== ESTILOS =====
+# ===== ESTILOS PERSONALIZADOS =====
 st.markdown("""
 <style>
 
@@ -34,7 +34,7 @@ p, li {
 
 /* TARJETAS */
 .card {
-    background-color: rgba(255,255,255,0.65);
+    background-color: rgba(255,255,255,0.70);
     padding: 30px;
     border-radius: 25px;
     box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
@@ -48,23 +48,22 @@ p, li {
     padding: 60px;
     border-radius: 30px;
     text-align: center;
-    color: white;
     margin-bottom: 30px;
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
 .hero-title {
-    color: white !important;
+    color: white;
     font-size: 60px;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .hero-text {
-    color: white !important;
+    color: white;
     font-size: 24px;
     line-height: 1.6;
-    margin: 0;
+    font-weight: 500;
 }
 
 /* INFO BOX */
