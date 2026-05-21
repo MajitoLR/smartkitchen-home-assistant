@@ -1,1 +1,0 @@
-# smartkitchen-home-assistant
