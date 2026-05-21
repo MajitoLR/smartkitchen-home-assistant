@@ -59,8 +59,7 @@ p, li {
 }
 
 .hero p {
-    color: white;
-    font-size: 22px;
+    color: white !important;
 }
 
 /* INFO BOX */
@@ -97,11 +96,21 @@ p, li {
 # ===== HERO =====
 st.markdown("""
 <div class="hero">
-    <h1>🍳 SmartKitchen</h1>
-    <p>
-        Disfruta de tu cocina inteligente a través de una 
-        gran experiencia interactiva y moderna 💙
+
+    <h1 style="margin-bottom: 15px;">
+        🍳 SmartKitchen
+    </h1>
+
+    <p style="
+        margin: 0;
+        text-align: center;
+        line-height: 1.6;
+        font-size: 24px;
+        font-weight: 500;
+    ">
+        Disfruta de tu cocina inteligente a través de una gran experiencia interactiva y moderna 💙
     </p>
+
 </div>
 """, unsafe_allow_html=True)
 
@@ -114,7 +123,7 @@ st.markdown("""
 Una cocina inteligente multimodal que permite:
 
 - 🍳 Asistente de Cocina Inteligente
-- 🌡️💧 Monitoreo de Sensores 
+- 🌡️💧 Monitoreo de Sensores
 - 🌀💨 Control Extractor de Humo
 
 </div>
