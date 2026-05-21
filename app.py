@@ -1,6 +1,3 @@
-# Reemplaza TODO el contenido de `app.py` por este código
-
-```python
 import streamlit as st
 
 st.set_page_config(
@@ -197,21 +194,3 @@ st.markdown("""
     <p>SmartKitchen AI © 2026</p>
 </div>
 """, unsafe_allow_html=True)
-```
-
-# Después de pegar el código:
-
-1. Baja hasta el final
-2. Presiona `Commit changes`
-3. Guarda los cambios
-
-Con esto la aplicación tendrá:
-
-* fondo moderno degradado
-* tarjetas elegantes
-* estilo futurista
-* diseño tipo IA
-* sombras y efectos visuales
-* interfaz mucho más profesional
-* sidebar personalizada
-* apariencia moderna tipo dashboard
