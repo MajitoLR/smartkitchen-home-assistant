@@ -99,7 +99,8 @@ st.markdown("""
 <div class="hero">
     <h1>🍳 SmartKitchen</h1>
     <p>
-        Disfruta de tu cocina inteligente a través de una gran experiencia interactiva y moderna 💙
+        Disfruta de tu cocina inteligente a través de una 
+        gran experiencia interactiva y moderna 💙
     </p>
 </div>
 """, unsafe_allow_html=True)
