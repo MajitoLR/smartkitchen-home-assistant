@@ -99,7 +99,7 @@ st.markdown("""
 <div class="hero">
     <h1>🍳 SmartKitchen</h1>
     <p>
-        Tu cocina inteligente, moderna y adorable 💙
+        Disfruta de tu cocina inteligente a través de una gran experiencia interactiva y moderna 💙
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -113,10 +113,8 @@ st.markdown("""
 Una cocina inteligente multimodal que permite:
 
 - 🍳 Asistente de Cocina Inteligente
-- 🌡️ Monitoreo de sensores desde Wokwi
-- ⏱️ Temporizadores y alertas inteligentes
-- 🖼️ Procesamiento de imágenes con Pillow
-- 🤖 Experiencia interactiva y moderna
+- 🌡️💧 Monitoreo de Sensores 
+- 🌀💨 Control Extractor de Humo
 
 </div>
 """, unsafe_allow_html=True)
