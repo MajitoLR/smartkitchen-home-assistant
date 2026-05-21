@@ -2,3 +2,10 @@ streamlit
 pandas
 flask
 requests
+
+streamlit
+streamlit-mic-recorder
+Pillow
+google-generativeai
+openai
+paho-mqtt== 1.6.1
