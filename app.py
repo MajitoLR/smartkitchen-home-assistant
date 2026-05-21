@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ===== ESTILOS PERSONALIZADOS =====
+# ===== ESTILOS =====
 st.markdown("""
 <style>
 
@@ -45,7 +45,7 @@ p, li {
 /* HERO */
 .hero {
     background: linear-gradient(to right, #60a5fa, #3b82f6);
-    padding: 50px;
+    padding: 60px;
     border-radius: 30px;
     text-align: center;
     color: white;
@@ -53,13 +53,18 @@ p, li {
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-.hero h1 {
+.hero-title {
     color: white !important;
-    font-size: 55px;
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
-.hero p {
+.hero-text {
     color: white !important;
+    font-size: 24px;
+    line-height: 1.6;
+    margin: 0;
 }
 
 /* INFO BOX */
@@ -97,19 +102,13 @@ p, li {
 st.markdown("""
 <div class="hero">
 
-    <h1 style="margin-bottom: 15px;">
+    <div class="hero-title">
         🍳 SmartKitchen
-    </h1>
+    </div>
 
-    <p style="
-        margin: 0;
-        text-align: center;
-        line-height: 1.6;
-        font-size: 24px;
-        font-weight: 500;
-    ">
+    <div class="hero-text">
         Disfruta de tu cocina inteligente a través de una gran experiencia interactiva y moderna 💙
-    </p>
+    </div>
 
 </div>
 """, unsafe_allow_html=True)
@@ -118,19 +117,24 @@ st.markdown("""
 st.markdown("""
 <div class="card">
 
-## 👩‍🍳 Bienvenido a SmartKitchen
+<h2>👩‍🍳 Bienvenido a SmartKitchen</h2>
 
+<p>
 Una cocina inteligente multimodal que permite:
+</p>
 
-- 🍳 Asistente de Cocina Inteligente
-- 🌡️💧 Monitoreo de Sensores
-- 🌀💨 Control Extractor de Humo
+<ul>
+<li>🍳 Asistente de Cocina Inteligente</li>
+<li>🌡️💧 Monitoreo de Sensores</li>
+<li>🌀💨 Control Extractor de Humo</li>
+</ul>
 
 </div>
 """, unsafe_allow_html=True)
 
 # ===== IMAGEN =====
 try:
+
     img = Image.open("cocina.jpg")
 
     st.image(
@@ -151,32 +155,44 @@ except FileNotFoundError:
 col1, col2, col3 = st.columns(3)
 
 with col1:
+
     st.markdown("""
     <div class="card">
-        <h3>🤖 IA de Cocina</h3>
-        <p>
-            Genera recetas inteligentes utilizando ingredientes disponibles.
-        </p>
+
+    <h3>🤖 IA de Cocina</h3>
+
+    <p>
+        Genera recetas inteligentes utilizando ingredientes disponibles.
+    </p>
+
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
+
     st.markdown("""
     <div class="card">
-        <h3>🌡️ Sensores Inteligentes</h3>
-        <p>
-            Monitorea temperatura y alertas desde Wokwi.
-        </p>
+
+    <h3>🌡️ Sensores Inteligentes</h3>
+
+    <p>
+        Monitorea temperatura y alertas desde Wokwi.
+    </p>
+
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
+
     st.markdown("""
     <div class="card">
-        <h3>🎀 Experiencia Multimodal</h3>
-        <p>
-            Interacción visual, sensores y automatización inteligente.
-        </p>
+
+    <h3>🎀 Experiencia Multimodal</h3>
+
+    <p>
+        Interacción visual, sensores y automatización inteligente.
+    </p>
+
     </div>
     """, unsafe_allow_html=True)
 
