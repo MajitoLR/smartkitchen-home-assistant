@@ -7,24 +7,12 @@ st.set_page_config(
     layout="wide"
 )
 
-# ===== ESTILOS PERSONALIZADOS =====
+# ===== ESTILOS =====
 st.markdown("""
 <style>
 
 .stApp {
-    background: linear-gradient(to bottom right, #dbeafe, #bfdbfe, #93c5fd);
-}
-
-/* TITULOS */
-h1, h2, h3 {
-    color: #1e3a8a !important;
-    font-family: 'Trebuchet MS', sans-serif;
-}
-
-/* TEXTO */
-p, li {
-    color: #1e293b;
-    font-size: 18px;
+    background: linear-gradient(to bottom right, #dbeafe, #93c5fd);
 }
 
 /* SIDEBAR */
@@ -34,64 +22,39 @@ p, li {
 
 /* TARJETAS */
 .card {
-    background-color: rgba(255,255,255,0.70);
-    padding: 30px;
+    background-color: rgba(255,255,255,0.75);
+    padding: 25px;
     border-radius: 25px;
-    box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
-    backdrop-filter: blur(10px);
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
 }
 
-/* HERO */
-.hero {
+/* TITULO */
+.titulo {
     background: linear-gradient(to right, #60a5fa, #3b82f6);
-    padding: 60px;
+    padding: 50px;
     border-radius: 30px;
     text-align: center;
+    color: white;
     margin-bottom: 30px;
-    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-.hero-title {
+.titulo h1 {
     color: white;
     font-size: 60px;
-    font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
-.hero-text {
+.titulo p {
     color: white;
     font-size: 24px;
-    line-height: 1.6;
-    font-weight: 500;
-}
-
-/* INFO BOX */
-.stAlert {
-    border-radius: 20px;
-}
-
-/* BOTONES */
-.stButton > button {
-    background-color: #3b82f6;
-    color: white;
-    border-radius: 15px;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-}
-
-.stButton > button:hover {
-    background-color: #2563eb;
-    color: white;
 }
 
 /* FOOTER */
 .footer {
     text-align: center;
+    margin-top: 30px;
     color: #1e3a8a;
-    margin-top: 40px;
-    font-size: 16px;
 }
 
 </style>
@@ -99,28 +62,21 @@ p, li {
 
 # ===== HERO =====
 st.markdown("""
-<div class="hero">
-
-    <div class="hero-title">
-        🍳 SmartKitchen
-    </div>
-
-    <div class="hero-text">
+<div class="titulo">
+    <h1>🍳 SmartKitchen</h1>
+    <p>
         Disfruta de tu cocina inteligente a través de una gran experiencia interactiva y moderna 💙
-    </div>
-
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ===== CONTENIDO =====
+# ===== BIENVENIDA =====
 st.markdown("""
 <div class="card">
 
 <h2>👩‍🍳 Bienvenido a SmartKitchen</h2>
 
-<p>
-Una cocina inteligente multimodal que permite:
-</p>
+<p>Una cocina inteligente multimodal que permite:</p>
 
 <ul>
 <li>🍳 Asistente de Cocina Inteligente</li>
@@ -142,7 +98,7 @@ try:
         use_container_width=True
     )
 
-except FileNotFoundError:
+except:
 
     st.image(
         "https://images.unsplash.com/photo-1556911220-e15b29be8c8f",
@@ -154,49 +110,31 @@ except FileNotFoundError:
 col1, col2, col3 = st.columns(3)
 
 with col1:
-
     st.markdown("""
     <div class="card">
-
     <h3>🤖 IA de Cocina</h3>
-
-    <p>
-        Genera recetas inteligentes utilizando ingredientes disponibles.
-    </p>
-
+    <p>Genera recetas inteligentes.</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
-
     st.markdown("""
     <div class="card">
-
     <h3>🌡️ Sensores Inteligentes</h3>
-
-    <p>
-        Monitorea temperatura y alertas desde Wokwi.
-    </p>
-
+    <p>Monitorea sensores desde Wokwi.</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
-
     st.markdown("""
     <div class="card">
-
     <h3>🎀 Experiencia Multimodal</h3>
-
-    <p>
-        Interacción visual, sensores y automatización inteligente.
-    </p>
-
+    <p>Interacción visual y automatización.</p>
     </div>
     """, unsafe_allow_html=True)
 
 # ===== INFO =====
-st.info("💙 Usa el menú lateral para navegar entre páginas.")
+st.info("💙 Usa el menú lateral para navegar.")
 
 # ===== SIDEBAR =====
 st.sidebar.title("🍳 SmartKitchen")
@@ -206,8 +144,6 @@ st.sidebar.markdown("---")
 st.sidebar.success("✨ Navegación")
 
 st.sidebar.markdown("""
-### 📌 Páginas
-
 - Inicio
 - Asistente de Recetas
 - Monitor Inteligente
@@ -220,6 +156,6 @@ st.sidebar.info("💙 Cocina inteligente multimodal")
 # ===== FOOTER =====
 st.markdown("""
 <div class="footer">
-    SmartKitchen © 2026 💙
+SmartKitchen © 2026 💙
 </div>
 """, unsafe_allow_html=True)
