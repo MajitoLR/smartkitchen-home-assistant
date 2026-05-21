@@ -1,54 +1,130 @@
 import streamlit as st
 import random
+import time
 
-st.title("🔥 Monitor Inteligente de Cocina")
-
-st.markdown("""
-Monitoreo en tiempo real de sensores y dispositivos de SmartKitchen.
-""")
-
-# Temperatura simulada
-temperatura = random.randint(20, 100)
-
-# Mostrar temperatura
-st.metric(
-    label="🌡️ Temperatura Actual",
-    value=f"{temperatura} °C"
+st.set_page_config(
+    page_title="Monitor Inteligente",
+    page_icon="🔥",
+    layout="wide"
 )
 
-# Estado de la cocina
-if temperatura < 50:
+# ===== ESTILOS =====
+st.markdown("""
+<style>
 
-    st.success("✅ Temperatura estable")
+.stApp {
+    background: linear-gradient(to bottom right, #0f172a, #1e293b);
+    color: white;
+}
 
-    st.write("LED apagado")
-    st.write("Buzzer apagado")
+.card {
+    background-color: rgba(255,255,255,0.08);
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.3);
+}
 
-else:
+h1, h2, h3 {
+    color: white !important;
+}
 
-    st.error("⚠️ ALERTA DE CALOR")
+</style>
+""", unsafe_allow_html=True)
 
-    st.write("🔴 LED encendido")
-    st.write("🔊 Buzzer activado")
+# ===== TITULO =====
+st.title("🔥 SmartKitchen Monitor")
 
-# Estado de dispositivos
-st.subheader("📟 Estado de Dispositivos")
+st.markdown("""
+Sistema inteligente de monitoreo de cocina en tiempo real.
+""")
 
+# ===== TEMPERATURA SIMULADA =====
+temperatura = random.randint(20, 100)
+
+# ===== TARJETAS =====
 col1, col2 = st.columns(2)
 
 with col1:
-    st.info("ESP32 conectado")
+
+    st.markdown("""
+    <div class="card">
+    <h3>🌡️ Temperatura Actual</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.metric(
+        label="Temperatura",
+        value=f"{temperatura} °C"
+    )
 
 with col2:
-    st.info("Sensores activos")
 
-# Botón de actualización
-if st.button("🔄 Actualizar sensores"):
-    st.rerun()
+    st.markdown("""
+    <div class="card">
+    <h3>📊 Nivel de Calor</h3>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Historial simulado
-st.subheader("📈 Historial de Temperatura")
+    st.progress(temperatura)
 
-datos = [random.randint(20, 100) for _ in range(10)]
+# ===== ALERTAS =====
+st.markdown("""
+<div class="card">
+<h3>🚨 Estado de la Cocina</h3>
+</div>
+""", unsafe_allow_html=True)
+
+if temperatura < 50:
+
+    st.success("✅ Cocina estable")
+
+    st.write("🟢 LED apagado")
+    st.write("🔇 Buzzer desactivado")
+
+elif temperatura < 80:
+
+    st.warning("⚠️ Temperatura elevada")
+
+    st.write("🟠 LED activo")
+    st.write("🔊 Buzzer en espera")
+
+else:
+
+    st.error("🔥 PELIGRO DE SOBRECALENTAMIENTO")
+
+    st.write("🔴 LED encendido")
+    st.write("🚨 Buzzer activado")
+
+# ===== SENSORES =====
+st.markdown("""
+<div class="card">
+<h3>📡 Sensores Inteligentes</h3>
+</div>
+""", unsafe_allow_html=True)
+
+sensor1, sensor2, sensor3 = st.columns(3)
+
+with sensor1:
+    st.info("ESP32 conectado")
+
+with sensor2:
+    st.info("Sensor de temperatura activo")
+
+with sensor3:
+    st.info("Sistema SmartKitchen operativo")
+
+# ===== HISTORIAL =====
+st.markdown("""
+<div class="card">
+<h3>📈 Historial de Temperatura</h3>
+</div>
+""", unsafe_allow_html=True)
+
+datos = [random.randint(20, 100) for _ in range(15)]
 
 st.line_chart(datos)
+
+# ===== AUTO REFRESH =====
+time.sleep(2)
+st.rerun()
