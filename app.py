@@ -1,7 +1,8 @@
 import streamlit as st
+from PIL import Image
 
 st.set_page_config(
-    page_title="SmartKitchen AI",
+    page_title="SmartKitchen",
     page_icon="🍳",
     layout="wide"
 )
@@ -11,93 +12,132 @@ st.markdown("""
 <style>
 
 .stApp {
-    background: linear-gradient(to bottom right, #0f172a, #1e293b, #334155);
-    color: white;
+    background: linear-gradient(to bottom right, #dbeafe, #bfdbfe, #93c5fd);
 }
 
-h1, h2, h3, h4 {
-    color: white !important;
+/* TITULOS */
+h1, h2, h3 {
+    color: #1e3a8a !important;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 
-p {
-    color: #e2e8f0;
+/* TEXTO */
+p, li {
+    color: #1e293b;
+    font-size: 18px;
 }
 
+/* SIDEBAR */
 [data-testid="stSidebar"] {
-    background-color: #111827;
+    background-color: #dbeafe;
 }
 
+/* TARJETAS */
 .card {
-    background-color: rgba(255,255,255,0.08);
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0px 4px 20px rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-    transition: 0.3s;
-    margin-bottom: 20px;
-}
-
-.card:hover {
-    transform: scale(1.02);
-}
-
-.section-title {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.hero {
-    background: linear-gradient(to right, #f97316, #ea580c);
-    padding: 40px;
+    background-color: rgba(255,255,255,0.65);
+    padding: 30px;
     border-radius: 25px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+    margin-bottom: 25px;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(to right, #60a5fa, #3b82f6);
+    padding: 50px;
+    border-radius: 30px;
     text-align: center;
     color: white;
     margin-bottom: 30px;
-    box-shadow: 0px 6px 25px rgba(0,0,0,0.35);
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
 .hero h1 {
-    font-size: 50px;
-    margin-bottom: 10px;
+    color: white !important;
+    font-size: 55px;
 }
 
 .hero p {
-    font-size: 20px;
+    color: white;
+    font-size: 22px;
+}
+
+/* INFO BOX */
+.stAlert {
+    border-radius: 20px;
+}
+
+/* BOTONES */
+.stButton > button {
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.stButton > button:hover {
+    background-color: #2563eb;
     color: white;
 }
 
+/* FOOTER */
 .footer {
     text-align: center;
-    color: #cbd5e1;
+    color: #1e3a8a;
     margin-top: 40px;
+    font-size: 16px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ===== HERO PRINCIPAL =====
+# ===== HERO =====
 st.markdown("""
 <div class="hero">
-    <h1>🍳 SmartKitchen AI</h1>
+    <h1>🍳 SmartKitchen</h1>
     <p>
-        Cocina inteligente multimodal con generación de recetas,
-        sensores inteligentes y automatización IoT.
+        Tu cocina inteligente, moderna y adorable 💙
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ===== DESCRIPCIÓN =====
+# ===== CONTENIDO =====
 st.markdown("""
 <div class="card">
-    <div class="section-title">🤖 ¿Qué es SmartKitchen AI?</div>
-    <p>
-        SmartKitchen AI es un asistente inteligente de cocina que ayuda a los usuarios
-        a cocinar de manera más segura, organizada e interactiva utilizando tecnologías
-        inteligentes y sensores conectados.
-    </p>
+
+## 👩‍🍳 Bienvenido a SmartKitchen
+
+Una cocina inteligente multimodal que permite:
+
+- 🍳 Asistente de Cocina Inteligente
+- 🌡️ Monitoreo de sensores desde Wokwi
+- ⏱️ Temporizadores y alertas inteligentes
+- 🖼️ Procesamiento de imágenes con Pillow
+- 🤖 Experiencia interactiva y moderna
+
 </div>
 """, unsafe_allow_html=True)
+
+# ===== IMAGEN =====
+try:
+    img = Image.open("cocina.jpg")
+
+    st.image(
+        img,
+        caption="💙 Centro de Control SmartKitchen",
+        use_container_width=True
+    )
+
+except FileNotFoundError:
+
+    st.image(
+        "https://images.unsplash.com/photo-1556911220-e15b29be8c8f",
+        caption="💙 Ecosistema SmartKitchen conectado",
+        use_container_width=True
+    )
 
 # ===== TARJETAS =====
 col1, col2, col3 = st.columns(3)
@@ -105,10 +145,9 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown("""
     <div class="card">
-        <h3>✨ IA de Recetas</h3>
+        <h3>🤖 IA de Cocina</h3>
         <p>
-            Genera recetas automáticamente utilizando los ingredientes
-            que tengas disponibles en casa.
+            Genera recetas inteligentes utilizando ingredientes disponibles.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -116,10 +155,9 @@ with col1:
 with col2:
     st.markdown("""
     <div class="card">
-        <h3>🔥 Monitor Inteligente</h3>
+        <h3>🌡️ Sensores Inteligentes</h3>
         <p>
-            Visualiza temperatura, sensores y alertas inteligentes
-            en tiempo real.
+            Monitorea temperatura y alertas desde Wokwi.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -127,54 +165,22 @@ with col2:
 with col3:
     st.markdown("""
     <div class="card">
-        <h3>🎤 Multimodalidad</h3>
+        <h3>🎀 Experiencia Multimodal</h3>
         <p>
-            Interactúa mediante botones, alertas visuales,
-            automatización y comandos simulados.
+            Interacción visual, sensores y automatización inteligente.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-# ===== OBJETIVO =====
-st.markdown("""
-<div class="card">
-    <div class="section-title">🎯 Objetivo del Proyecto</div>
-    <p>
-        Crear una experiencia de cocina moderna e inteligente combinando:
-    </p>
-
-    <ul>
-        <li>Automatización inteligente</li>
-        <li>Interacción multimodal</li>
-        <li>Sensores IoT</li>
-        <li>Generación inteligente de recetas</li>
-        <li>Monitoreo en tiempo real</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
-
-# ===== TECNOLOGÍAS =====
-st.markdown("""
-<div class="card">
-    <div class="section-title">🛠️ Tecnologías Utilizadas</div>
-
-- Streamlit  
-- Python  
-- ESP32  
-- Wokwi  
-- Flask  
-- GitHub  
-- IoT  
-
-</div>
-""", unsafe_allow_html=True)
+# ===== INFO =====
+st.info("💙 Usa el menú lateral para navegar entre páginas.")
 
 # ===== SIDEBAR =====
-st.sidebar.title("🍳 SmartKitchen AI")
+st.sidebar.title("🍳 SmartKitchen")
 
 st.sidebar.markdown("---")
 
-st.sidebar.success("Navegación")
+st.sidebar.success("✨ Navegación")
 
 st.sidebar.markdown("""
 ### 📌 Páginas
@@ -186,11 +192,11 @@ st.sidebar.markdown("""
 
 st.sidebar.markdown("---")
 
-st.sidebar.info("Proyecto de cocina inteligente multimodal")
+st.sidebar.info("💙 Cocina inteligente multimodal")
 
 # ===== FOOTER =====
 st.markdown("""
 <div class="footer">
-    <p>SmartKitchen AI © 2026</p>
+    SmartKitchen © 2026 💙
 </div>
 """, unsafe_allow_html=True)
