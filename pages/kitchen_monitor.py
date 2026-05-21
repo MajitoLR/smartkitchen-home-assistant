@@ -1,14 +1,14 @@
 import streamlit as st
 from openai import OpenAI
 
-# ── CONFIGURACIÓN ───────────────────────────────────────
+# ── CONFIGURACIÓN INICIAL ────────────────────────────────
 st.set_page_config(
     page_title="Asistente de Cocina Virtual",
-    page_icon="🍳",
-    layout="wide"
+    page_icon="💬",
+    layout="centered"
 )
 
-# ── ESTILOS VISUALES ────────────────────────────────────
+# ── ESTÉTICA VISUAL ──────────────────────────────────────
 st.markdown("""
 <style>
 
@@ -28,32 +28,31 @@ h1, h2, h3 {
     font-family: 'Trebuchet MS', sans-serif;
 }
 
-/* TEXTO */
-p, label, span {
+/* TEXTOS */
+p, span, label {
     color: #1E3A8A !important;
 }
 
 /* HERO */
 .hero {
     background: linear-gradient(to right, #60A5FA, #3B82F6);
-    padding: 50px;
+    padding: 40px;
     border-radius: 30px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
 .hero-title {
     color: white;
-    font-size: 55px;
+    font-size: 45px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .hero-text {
     color: white;
-    font-size: 22px;
-    line-height: 1.6;
+    font-size: 20px;
 }
 
 /* TARJETAS */
@@ -61,17 +60,34 @@ p, label, span {
     background-color: rgba(255,255,255,0.75);
     padding: 25px;
     border-radius: 25px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
+}
+
+/* BOTONES */
+div.stButton > button {
+    background-color: #3B82F6 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    border: 2px solid #60A5FA !important;
+    width: 100%;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+div.stButton > button:hover {
+    background-color: #1D4ED8 !important;
+    border: 2px solid #2563EB !important;
+    transform: scale(1.02);
 }
 
 /* CHAT */
 .stChatMessage {
     background-color: rgba(255,255,255,0.85);
     border-radius: 20px;
-    padding: 10px;
-    border: 1px solid #bfdbfe;
+    border: 1px solid #E2E8F0;
     margin-bottom: 10px;
+    padding: 10px;
 }
 
 /* INPUT CHAT */
@@ -80,39 +96,11 @@ p, label, span {
     border-radius: 20px;
 }
 
-/* BOTONES */
-.stButton > button {
-    background-color: #3B82F6 !important;
-    color: white !important;
-    border-radius: 18px !important;
-    border: none !important;
-    padding: 12px 18px !important;
-    font-weight: bold !important;
-    width: 100%;
-    transition: 0.3s;
-}
-
-.stButton > button:hover {
-    background-color: #2563EB !important;
-    transform: scale(1.02);
-}
-
-/* SELECTBOX */
-div[data-baseweb="select"] {
-    background-color: white;
-    border-radius: 15px;
-}
-
-/* INPUT PASSWORD */
-input {
-    border-radius: 15px !important;
-}
-
 /* FOOTER */
 .footer {
     text-align: center;
     color: #1E3A8A;
-    margin-top: 40px;
+    margin-top: 30px;
     font-size: 16px;
 }
 
@@ -128,18 +116,16 @@ st.markdown("""
     </div>
 
     <div class="hero-text">
-        Descubre recetas deliciosas utilizando los ingredientes que tienes en casa 💙
+        Descubre recetas deliciosas utilizando los ingredientes que tienes disponibles 💙
     </div>
 
 </div>
 """, unsafe_allow_html=True)
 
-# ── SIDEBAR ─────────────────────────────────────────────
+# ── SIDEBAR (CONFIGURACIÓN) ──────────────────────────────
 with st.sidebar:
 
-    st.title("⚙️ Configuración")
-
-    st.markdown("---")
+    st.header("⚙️ Configuración")
 
     api_key = st.text_input(
         "🔑 OpenAI API Key",
@@ -148,17 +134,9 @@ with st.sidebar:
     )
 
     model = st.selectbox(
-        "🤖 Modelo IA",
-        [
-            "gpt-4o-mini",
-            "gpt-4o",
-            "gpt-3.5-turbo"
-        ]
+        "Modelo",
+        ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"]
     )
-
-    st.markdown("---")
-
-    st.info("💙 SmartKitchen AI")
 
     # PROMPT OCULTO
     if "system_prompt" not in st.session_state:
@@ -169,45 +147,36 @@ with st.sidebar:
             "y usa emojis relacionados con alimentos."
         )
 
-# ── BIENVENIDA ──────────────────────────────────────────
+# ── MAIN (INTERFAZ DE CHAT) ─────────────────────────────
 st.markdown("""
 <div class="card">
 
 <h2>👩‍🍳 Bienvenido a SmartKitchen AI</h2>
 
 <p>
-Escribe los ingredientes que tienes disponibles y nuestra IA creará recetas increíbles para ti ✨
+¡Hola! Soy tu chef personal. Dime qué ingredientes tienes y crearemos algo increíble juntos ✨
 </p>
-
-<ul>
-<li>🥗 Ideas de recetas inteligentes</li>
-<li>🍝 Recomendaciones personalizadas</li>
-<li>🧁 Tips de cocina creativos</li>
-<li>🤖 Asistencia culinaria con IA</li>
-</ul>
 
 </div>
 """, unsafe_allow_html=True)
 
-# ── HISTORIAL ───────────────────────────────────────────
+# Inicializar historial
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Mostrar mensajes
+# Mostrar historial con burbujas de chat
 for msg in st.session_state.messages:
-
     with st.chat_message(msg["role"]):
         st.write(msg["content"])
 
-# ── INPUT USUARIO ───────────────────────────────────────
+# Input del usuario
 if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."):
 
     if not api_key:
-
-        st.warning("⚠️ Por favor ingresa tu API Key en el panel lateral.")
+        st.warning("Por favor ingresa tu API Key en el panel lateral.")
         st.stop()
 
-    # Mensaje usuario
+    # Mostrar mensaje del usuario
     st.session_state.messages.append({
         "role": "user",
         "content": prompt
@@ -216,11 +185,10 @@ if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."
     with st.chat_message("user"):
         st.write(prompt)
 
-    # Construcción mensajes
+    # Construir lista de mensajes
     messages_to_send = []
 
     if st.session_state.system_prompt:
-
         messages_to_send.append({
             "role": "system",
             "content": st.session_state.system_prompt
@@ -228,12 +196,12 @@ if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."
 
     messages_to_send += st.session_state.messages
 
-    # OpenAI
+    # Llamar OpenAI
     client = OpenAI(api_key=api_key)
 
     with st.chat_message("assistant"):
 
-        with st.spinner("👩‍🍳 Cocinando una receta increíble..."):
+        with st.spinner("🍳 Cocinando una respuesta..."):
 
             try:
 
@@ -252,13 +220,12 @@ if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."
                 })
 
             except Exception as e:
+                st.error(f"Error: {e}")
 
-                st.error(f"❌ Error: {e}")
-
-# ── BOTÓN LIMPIAR ───────────────────────────────────────
+# Botón limpiar
 if st.session_state.messages:
 
-    st.write("")
+    st.write("---")
 
     if st.button("🗑️ Limpiar conversación"):
 
@@ -266,9 +233,9 @@ if st.session_state.messages:
 
         st.rerun()
 
-# ── FOOTER ──────────────────────────────────────────────
+# FOOTER
 st.markdown("""
 <div class="footer">
-    SmartKitchen AI © 2026 💙
+    SmartKitchen © 2026 💙
 </div>
 """, unsafe_allow_html=True)
