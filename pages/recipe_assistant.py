@@ -1,79 +1,132 @@
 import streamlit as st
 
-st.title("📖 Asistente de Recetas")
+st.set_page_config(
+    page_title="Asistente de Recetas",
+    page_icon="🍳",
+    layout="wide"
+)
+
+st.title("🍳 SmartKitchen AI")
 
 st.markdown("""
-Bienvenido al asistente inteligente de recetas de SmartKitchen.
+## Generador Inteligente de Recetas
+
+Escribe los ingredientes que tienes disponibles y SmartKitchen generará una receta automáticamente.
 """)
 
-# Buscador
-busqueda = st.text_input("🔍 Buscar receta")
+# Entrada de ingredientes
+ingredientes_usuario = st.text_area(
+    "🧂 Escribe tus ingredientes separados por comas",
+    placeholder="Ejemplo: pollo, arroz, tomate, queso"
+)
 
-# Recetas simuladas
-recetas = {
-    "pasta": {
-        "ingredientes": [
-            "Pasta",
-            "Salsa de tomate",
-            "Queso",
-            "Sal"
-        ],
+# Base de recetas simuladas
+recetas = [
+
+    {
+        "nombre": "Arroz con Pollo",
+        "ingredientes": ["pollo", "arroz"],
         "pasos": [
-            "Hervir agua",
-            "Agregar la pasta",
-            "Cocinar durante 10 minutos",
-            "Agregar salsa y queso"
+            "Cocinar el arroz",
+            "Cocinar el pollo",
+            "Mezclar ambos ingredientes",
+            "Servir caliente"
         ]
     },
 
-    "arroz": {
-        "ingredientes": [
-            "Arroz",
-            "Agua",
-            "Sal"
-        ],
+    {
+        "nombre": "Pasta con Queso",
+        "ingredientes": ["pasta", "queso"],
         "pasos": [
-            "Agregar agua",
-            "Añadir arroz",
-            "Cocinar durante 20 minutos"
+            "Hervir la pasta",
+            "Agregar queso",
+            "Mezclar bien",
+            "Servir"
+        ]
+    },
+
+    {
+        "nombre": "Ensalada Fresca",
+        "ingredientes": ["lechuga", "tomate", "cebolla"],
+        "pasos": [
+            "Lavar los vegetales",
+            "Cortar ingredientes",
+            "Mezclar todo",
+            "Agregar sal al gusto"
+        ]
+    },
+
+    {
+        "nombre": "Omelette de Queso",
+        "ingredientes": ["huevo", "queso"],
+        "pasos": [
+            "Batir los huevos",
+            "Agregar queso",
+            "Cocinar en sartén",
+            "Servir caliente"
         ]
     }
-}
 
-# Mostrar receta
-if busqueda.lower() in recetas:
+]
 
-    receta = recetas[busqueda.lower()]
+# Botón generar receta
+if st.button("✨ Generar receta"):
 
-    st.subheader("🧂 Ingredientes")
+    ingredientes = [
+        ingrediente.strip().lower()
+        for ingrediente in ingredientes_usuario.split(",")
+    ]
 
-    for ingrediente in receta["ingredientes"]:
-        st.write(f"• {ingrediente}")
+    receta_encontrada = False
 
-    st.subheader("👨‍🍳 Pasos")
+    for receta in recetas:
 
-    for i, paso in enumerate(receta["pasos"], start=1):
-        st.write(f"{i}. {paso}")
+        coincidencias = 0
 
-else:
-    if busqueda != "":
-        st.warning("Receta no encontrada")
+        for ingrediente in receta["ingredientes"]:
 
-# Temporizador
-st.subheader("⏲️ Temporizador")
+            if ingrediente in ingredientes:
+                coincidencias += 1
 
-tiempo = st.slider(
-    "Selecciona los minutos",
-    1,
-    60,
-    10
-)
+        if coincidencias >= 2:
 
-if st.button("▶️ Iniciar temporizador"):
-    st.success(f"Temporizador iniciado por {tiempo} minutos")
+            receta_encontrada = True
 
-# Comando de voz simulado
-st.subheader("🎤 Comandos de voz")
+            st.success(f"🍽️ Receta sugerida: {receta['nombre']}")
 
-if st.button("Activar comando de voz"):
-    st.info("Comando de voz activado")
+            st.subheader("🧂 Ingredientes")
+
+            for ingrediente in receta["ingredientes"]:
+                st.write(f"• {ingrediente}")
+
+            st.subheader("👨‍🍳 Pasos")
+
+            for i, paso in enumerate(receta["pasos"], start=1):
+                st.write(f"{i}. {paso}")
+
+            st.subheader("⏲️ Temporizador")
+
+            tiempo = st.slider(
+                "Selecciona los minutos",
+                1,
+                60,
+                10
+            )
+
+            if st.button("▶️ Iniciar temporizador"):
+                st.info(f"Temporizador iniciado por {tiempo} minutos")
+
+            st.subheader("🎤 Asistente de voz")
+
+            if st.button("Activar asistente"):
+                st.success("Asistente de voz activado")
+
+            break
+
+    if not receta_encontrada:
+
+        st.warning("No encontramos una receta exacta.")
+
+        st.info("""
+Puedes intentar agregando más ingredientes.
+""")
