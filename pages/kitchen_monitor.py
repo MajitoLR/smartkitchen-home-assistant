@@ -1,28 +1,60 @@
 import streamlit as st
-from openai import OpenAI
+import paho.mqtt.client as mqtt
+import json
+import time
 
-# ── CONFIGURACIÓN ─────────────────────────────
+# ── CONFIGURACIÓN INICIAL ────────────────────────────────
 st.set_page_config(
-    page_title="Asistente de Cocina Virtual",
-    page_icon="🍳",
-    layout="centered"
+    page_title="Monitoreo Wokwi",
+    page_icon="🌡️",
+    layout="wide"
 )
 
-# ── ESTILOS ───────────────────────────────────
+# ── ESTÉTICA VISUAL ──────────────────────────────────────
 st.markdown("""
 <style>
 
+/* FONDO GENERAL */
 .stApp {
     background: linear-gradient(to bottom right, #dbeafe, #93c5fd);
 }
 
+/* SIDEBAR */
 [data-testid="stSidebar"] {
     background-color: #dbeafe;
 }
 
-h1, h2, h3, p, span, label {
+/* TITULOS */
+h1, h2, h3 {
     color: #1E3A8A !important;
     font-family: 'Trebuchet MS', sans-serif;
+}
+
+/* TEXTOS */
+p, span, label {
+    color: #1E3A8A !important;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(to right, #60A5FA, #3B82F6);
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+}
+
+.hero-title {
+    color: white;
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.hero-text {
+    color: white;
+    font-size: 20px;
 }
 
 /* TARJETAS */
@@ -34,6 +66,14 @@ h1, h2, h3, p, span, label {
     box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
 }
 
+/* MÉTRICAS */
+[data-testid="stMetric"] {
+    background-color: rgba(255,255,255,0.85);
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
+}
+
 /* BOTONES */
 div.stButton > button {
     background-color: #3B82F6 !important;
@@ -42,130 +82,177 @@ div.stButton > button {
     border: none !important;
     width: 100%;
     font-weight: bold;
+    transition: 0.3s;
+    height: 55px;
 }
 
-/* CHAT */
-.stChatMessage {
-    background-color: rgba(255,255,255,0.85);
+div.stButton > button:hover {
+    background-color: #1D4ED8 !important;
+    transform: scale(1.02);
+}
+
+/* ALERTAS */
+.stAlert {
     border-radius: 20px;
-    border: 1px solid #E2E8F0;
-    padding: 10px;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    color: #1E3A8A;
+    margin-top: 40px;
+    font-size: 16px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ── HERO ──────────────────────────────────────
+# ── HERO ────────────────────────────────────────────────
 st.markdown("""
-# 🍳🧑‍🍳 Asistente de Cocina Virtual
+<div class="hero">
 
-### Descubre recetas deliciosas utilizando los ingredientes que tienes disponibles 💙
-""")
+    <div class="hero-title">
+        🌡️💧 Monitor Inteligente
+    </div>
 
-# ── TARJETA BIENVENIDA ───────────────────────
+    <div class="hero-text">
+        Visualiza los sensores de SmartKitchen en tiempo real desde Wokwi 💙
+    </div>
+
+</div>
+""", unsafe_allow_html=True)
+
+# ── DESCRIPCIÓN ──────────────────────────────────────────
 st.markdown("""
 <div class="card">
 
-<h3>👩‍🍳 Bienvenido a SmartKitchen AI</h3>
+<h3>👩‍🍳 Panel de Monitoreo Inteligente</h3>
 
 <p>
-¡Hola! Soy tu chef personal. Dime qué ingredientes tienes y crearemos algo increíble juntos ✨
+Esta sección permite visualizar la temperatura y humedad de la cocina inteligente
+simulada en Wokwi en tiempo real ✨
 </p>
 
 </div>
 """, unsafe_allow_html=True)
 
-# ── SIDEBAR ───────────────────────────────────
-with st.sidebar:
+# 📡 Datos MQTT
+BROKER = "broker.mqttdashboard.com"
+PORT = 1883
+TOPIC = "manuela_vallejo/smartkitchen"
 
-    st.header("⚙️ Configuración")
+# Estados iniciales
+if "temperatura" not in st.session_state:
+    st.session_state["temperatura"] = "Esperando..."
 
-    api_key = st.text_input(
-        "🔑 OpenAI API Key",
-        type="password",
-        placeholder="sk-..."
+if "humedad" not in st.session_state:
+    st.session_state["humedad"] = "Esperando..."
+
+# Callback MQTT
+def mensaje_recibido(client, userdata, msg):
+
+    try:
+
+        payload = msg.payload.decode("utf-8")
+
+        datos = json.loads(payload)
+
+        if "Temp" in datos and "Hum" in datos:
+
+            st.session_state["temperatura"] = f"{datos['Temp']} °C"
+            st.session_state["humedad"] = f"{datos['Hum']} %"
+
+    except Exception:
+        pass
+
+# ── MÉTRICAS ────────────────────────────────────────────
+c1, c2 = st.columns(2)
+
+with c1:
+
+    st.metric(
+        label="🌡️ Temperatura Horno",
+        value=st.session_state["temperatura"]
     )
 
-    model = st.selectbox(
-        "Modelo",
-        ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"]
+with c2:
+
+    st.metric(
+        label="💧 Humedad Ambiente",
+        value=st.session_state["humedad"]
     )
 
-    if "system_prompt" not in st.session_state:
+st.write("")
 
-        st.session_state.system_prompt = (
-            "Eres un chef profesional alegre, creativo y experto en optimizar "
-            "ingredientes."
-        )
+# ── BOTÓN ACTUALIZAR ────────────────────────────────────
+if st.button(
+    "🔄 Actualizar Lecturas de Wokwi",
+    type="primary",
+    use_container_width=True
+):
 
-# ── HISTORIAL ─────────────────────────────────
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    with st.spinner("📡 Conectando con Wokwi..."):
 
-# Mostrar mensajes
-for msg in st.session_state.messages:
+        st.session_state["temperatura"] = "Esperando..."
+        st.session_state["humedad"] = "Esperando..."
 
-    with st.chat_message(msg["role"]):
-        st.write(msg["content"])
+        try:
 
-# ── INPUT ─────────────────────────────────────
-if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."):
+            api_version = mqtt.CallbackAPIVersion.VERSION1
 
-    if not api_key:
+            cliente = mqtt.Client(
+                callback_api_version=api_version
+            )
 
-        st.warning("Por favor ingresa tu API Key.")
-        st.stop()
+        except AttributeError:
 
-    st.session_state.messages.append({
-        "role": "user",
-        "content": prompt
-    })
+            cliente = mqtt.Client()
 
-    with st.chat_message("user"):
-        st.write(prompt)
+        cliente.on_message = mensaje_recibido
 
-    messages_to_send = [
-        {
-            "role": "system",
-            "content": st.session_state.system_prompt
-        }
-    ]
+        try:
 
-    messages_to_send += st.session_state.messages
+            cliente.connect(BROKER, PORT, 60)
 
-    client = OpenAI(api_key=api_key)
+            cliente.subscribe(TOPIC)
 
-    with st.chat_message("assistant"):
+            intentos = 0
 
-        with st.spinner("🍳 Cocinando una respuesta..."):
+            while intentos < 30:
 
-            try:
+                cliente.loop(timeout=0.2)
 
-                response = client.chat.completions.create(
-                    model=model,
-                    messages=messages_to_send,
+                if st.session_state["temperatura"] != "Esperando...":
+                    break
+
+                time.sleep(0.2)
+
+                intentos += 1
+
+            cliente.disconnect()
+
+            if st.session_state["temperatura"] != "Esperando...":
+
+                st.toast(
+                    "¡Datos sincronizados desde Wokwi!",
+                    icon="📡"
                 )
 
-                reply = response.choices[0].message.content
+            else:
 
-                st.write(reply)
+                st.warning(
+                    "No se recibió información nueva desde Wokwi."
+                )
 
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": reply
-                })
+            st.rerun()
 
-            except Exception as e:
+        except Exception as e:
 
-                st.error(f"Error: {e}")
+            st.error(f"Error de conexión: {e}")
 
-# ── LIMPIAR CHAT ──────────────────────────────
-if st.session_state.messages:
-
-    st.write("---")
-
-    if st.button("🗑️ Limpiar conversación"):
-
-        st.session_state.messages = []
-
-        st.rerun()
+# ── FOOTER ──────────────────────────────────────────────
+st.markdown("""
+<div class="footer">
+    SmartKitchen © 2026 💙
+</div>
+""", unsafe_allow_html=True)
