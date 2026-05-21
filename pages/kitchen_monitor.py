@@ -147,7 +147,7 @@ with st.sidebar:
             "y usa emojis relacionados con alimentos."
         )
 
-# ── MAIN (INTERFAZ DE CHAT) ─────────────────────────────
+# ── MAIN ────────────────────────────────────────────────
 st.markdown("""
 <div class="card">
 
@@ -164,19 +164,21 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Mostrar historial con burbujas de chat
+# Mostrar historial
 for msg in st.session_state.messages:
+
     with st.chat_message(msg["role"]):
         st.write(msg["content"])
 
-# Input del usuario
+# Input usuario
 if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."):
 
     if not api_key:
+
         st.warning("Por favor ingresa tu API Key en el panel lateral.")
         st.stop()
 
-    # Mostrar mensaje del usuario
+    # Mensaje usuario
     st.session_state.messages.append({
         "role": "user",
         "content": prompt
@@ -185,7 +187,7 @@ if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."
     with st.chat_message("user"):
         st.write(prompt)
 
-    # Construir lista de mensajes
+    # Construir mensajes
     messages_to_send = []
 
     if st.session_state.system_prompt:
@@ -196,7 +198,7 @@ if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."
 
     messages_to_send += st.session_state.messages
 
-    # Llamar OpenAI
+    # OpenAI
     client = OpenAI(api_key=api_key)
 
     with st.chat_message("assistant"):
@@ -220,6 +222,7 @@ if prompt := st.chat_input("🍳 Escribe tus ingredientes o dudas culinarias..."
                 })
 
             except Exception as e:
+
                 st.error(f"Error: {e}")
 
 # Botón limpiar
