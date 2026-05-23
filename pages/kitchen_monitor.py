@@ -1,38 +1,34 @@
-import streamlit as st
-import paho.mqtt.client as mqtt
-import json
+import paho.mqtt.client as paho
 import time
+import streamlit as st
+import json
+import platform
 
-# ── CONFIGURACIÓN ─────────────────────────────
+# ── CONFIGURACIÓN VISUAL ─────────────────────────────────
 st.set_page_config(
-    page_title="Monitoreo Wokwi",
-    page_icon="🌡️",
+    page_title="Control de Extractor de Humo",
+    page_icon="🌀",
     layout="wide"
 )
 
-# ── ESTILOS ───────────────────────────────────
+# ── ESTILOS ──────────────────────────────────────────────
 st.markdown("""
 <style>
 
+/* FONDO GENERAL */
 .stApp {
     background: linear-gradient(to bottom right, #dbeafe, #93c5fd);
 }
 
+/* SIDEBAR */
 [data-testid="stSidebar"] {
     background-color: #dbeafe;
 }
 
+/* TITULOS */
 h1, h2, h3, p, span, label {
     color: #1E3A8A !important;
     font-family: 'Trebuchet MS', sans-serif;
-}
-
-/* MÉTRICAS */
-[data-testid="stMetric"] {
-    background-color: rgba(255,255,255,0.85);
-    padding: 20px;
-    border-radius: 25px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
 }
 
 /* BOTONES */
@@ -43,11 +39,14 @@ div.stButton > button {
     border: none !important;
     width: 100%;
     font-weight: bold;
-    height: 55px;
+    transition: 0.3s;
+    height: 60px;
+    font-size: 18px;
 }
 
 div.stButton > button:hover {
     background-color: #1D4ED8 !important;
+    transform: scale(1.02);
 }
 
 /* ALERTAS */
@@ -55,138 +54,111 @@ div.stButton > button:hover {
     border-radius: 20px;
 }
 
+/* SLIDER */
+.stSlider > div > div > div > div {
+    background-color: #3B82F6 !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# ── TITULO ────────────────────────────────────
-st.title("🌡️💧 Monitor Inteligente")
+# ── LÓGICA ORIGINAL ──────────────────────────────────────
+values = 0.0
+act1 = "OFF"
+
+def on_publish(client, userdata, result):
+    print("el dato ha sido publicado \n")
+    pass
+
+def on_message(client, userdata, message):
+    global message_received
+    time.sleep(2)
+    message_received = str(message.payload.decode("utf-8"))
+    st.write(message_received)
+
+broker = "broker.mqttdashboard.com"
+port = 1883
+
+client1 = paho.Client("GIT-HUBM")
+client1.on_message = on_message
+
+# ── TITULO ───────────────────────────────────────────────
+st.title("🌀💨 Control de Extractor de Humo")
 
 st.subheader(
-    "💙 Visualiza los sensores de SmartKitchen en tiempo real desde Wokwi"
+    "💙 Controla el sistema de ventilación inteligente de SmartKitchen"
 )
 
-# ── INFORMACIÓN ───────────────────────────────
+# ── INFORMACIÓN ──────────────────────────────────────────
 st.info("""
-👩‍🍳 Panel de Monitoreo Inteligente
+👩‍🍳 Panel de Automatización Inteligente
 
-Esta sección permite visualizar la temperatura y humedad
-de la cocina inteligente simulada en Wokwi en tiempo real ✨
+Esta sección permite controlar el extractor de humo de la cocina inteligente
+simulada en Wokwi mediante comandos remotos en tiempo real ✨
 """)
 
 st.write("")
 
-# ── MQTT ──────────────────────────────────────
-BROKER = "broker.mqttdashboard.com"
-PORT = 1883
-TOPIC = "manuela_vallejo/smartkitchen"
+# ── BOTONES ──────────────────────────────────────────────
+col1, col2 = st.columns(2)
 
-# ── ESTADOS ───────────────────────────────────
-if "temperatura" not in st.session_state:
-    st.session_state["temperatura"] = "Esperando..."
+with col1:
 
-if "humedad" not in st.session_state:
-    st.session_state["humedad"] = "Esperando..."
+    if st.button(
+        '🟢 Encender Extractor',
+        use_container_width=True
+    ):
 
-# ── CALLBACK ──────────────────────────────────
-def mensaje_recibido(client, userdata, msg):
+        act1 = "Encender"
 
-    try:
+        client1 = paho.Client("GIT-HUBM")
 
-        payload = msg.payload.decode("utf-8")
+        client1.on_publish = on_publish
 
-        datos = json.loads(payload)
+        client1.connect(broker, port)
 
-        if "Temp" in datos and "Hum" in datos:
+        message = json.dumps({"Act1": act1})
 
-            st.session_state["temperatura"] = f"{datos['Temp']} °C"
+        ret = client1.publish(
+            "manuela_vallejo/smartkitchen/comandos",
+            "ENCENDER_EXTRACTOR"
+        )
 
-            st.session_state["humedad"] = f"{datos['Hum']} %"
+        st.success("💨 Extractor encendido correctamente")
 
-    except:
-        pass
+    else:
 
-# ── MÉTRICAS ──────────────────────────────────
-c1, c2 = st.columns(2)
+        st.write('')
 
-with c1:
+with col2:
 
-    st.metric(
-        label="🌡️ Temperatura Horno",
-        value=st.session_state["temperatura"]
-    )
+    if st.button(
+        '🔴 Apagar Extractor',
+        use_container_width=True
+    ):
 
-with c2:
+        act1 = "Apagar"
 
-    st.metric(
-        label="💧 Humedad Ambiente",
-        value=st.session_state["humedad"]
-    )
+        client1 = paho.Client("GIT-HUBM")
 
-st.write("")
+        client1.on_publish = on_publish
 
-# ── BOTÓN ─────────────────────────────────────
-if st.button(
-    "🔄 Actualizar Lecturas de Wokwi",
-    use_container_width=True
-):
+        client1.connect(broker, port)
 
-    with st.spinner("📡 Conectando con Wokwi..."):
+        message = json.dumps({"Act1": act1})
 
-        st.session_state["temperatura"] = "Esperando..."
-        st.session_state["humedad"] = "Esperando..."
+        ret = client1.publish(
+            "manuela_vallejo/smartkitchen/comandos",
+            "APAGAR_EXTRACTOR"
+        )
 
-        try:
+        st.warning("💨 Extractor apagado correctamente")
 
-            api_version = mqtt.CallbackAPIVersion.VERSION1
+    else:
 
-            cliente = mqtt.Client(
-                callback_api_version=api_version
-            )
+        st.write('')
 
-        except AttributeError:
-
-            cliente = mqtt.Client()
-
-        cliente.on_message = mensaje_recibido
-
-        try:
-
-            cliente.connect(BROKER, PORT, 60)
-
-            cliente.subscribe(TOPIC)
-
-            intentos = 0
-
-            while intentos < 30:
-
-                cliente.loop(timeout=0.2)
-
-                if st.session_state["temperatura"] != "Esperando...":
-                    break
-
-                time.sleep(0.2)
-
-                intentos += 1
-
-            cliente.disconnect()
-
-            if st.session_state["temperatura"] != "Esperando...":
-
-                st.success("📡 Datos sincronizados correctamente")
-
-            else:
-
-                st.warning(
-                    "No se recibió información nueva desde Wokwi."
-                )
-
-            st.rerun()
-
-        except Exception as e:
-
-            st.error(f"Error de conexión: {e}")
-
-# ── FOOTER ────────────────────────────────────
+# ── FOOTER ───────────────────────────────────────────────
 st.write("---")
 
 st.caption("💙 SmartKitchen © 2026")
