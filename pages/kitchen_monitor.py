@@ -3,67 +3,28 @@ import paho.mqtt.client as mqtt
 import json
 import time
 
-# ── CONFIGURACIÓN INICIAL ────────────────────────────────
+# ── CONFIGURACIÓN ─────────────────────────────
 st.set_page_config(
     page_title="Monitoreo Wokwi",
     page_icon="🌡️",
     layout="wide"
 )
 
-# ── ESTÉTICA VISUAL ──────────────────────────────────────
+# ── ESTILOS ───────────────────────────────────
 st.markdown("""
 <style>
 
-/* FONDO GENERAL */
 .stApp {
     background: linear-gradient(to bottom right, #dbeafe, #93c5fd);
 }
 
-/* SIDEBAR */
 [data-testid="stSidebar"] {
     background-color: #dbeafe;
 }
 
-/* TITULOS */
-h1, h2, h3 {
+h1, h2, h3, p, span, label {
     color: #1E3A8A !important;
     font-family: 'Trebuchet MS', sans-serif;
-}
-
-/* TEXTOS */
-p, span, label {
-    color: #1E3A8A !important;
-}
-
-/* HERO */
-.hero {
-    background: linear-gradient(to right, #60A5FA, #3B82F6);
-    padding: 40px;
-    border-radius: 30px;
-    text-align: center;
-    margin-bottom: 25px;
-    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
-}
-
-.hero-title {
-    color: white;
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.hero-text {
-    color: white;
-    font-size: 20px;
-}
-
-/* TARJETAS */
-.card {
-    background-color: rgba(255,255,255,0.80);
-    padding: 25px;
-    border-radius: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
 }
 
 /* MÉTRICAS */
@@ -82,13 +43,11 @@ div.stButton > button {
     border: none !important;
     width: 100%;
     font-weight: bold;
-    transition: 0.3s;
     height: 55px;
 }
 
 div.stButton > button:hover {
     background-color: #1D4ED8 !important;
-    transform: scale(1.02);
 }
 
 /* ALERTAS */
@@ -96,59 +55,39 @@ div.stButton > button:hover {
     border-radius: 20px;
 }
 
-/* FOOTER */
-.footer {
-    text-align: center;
-    color: #1E3A8A;
-    margin-top: 40px;
-    font-size: 16px;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# ── HERO ────────────────────────────────────────────────
-st.markdown("""
-<div class="hero">
+# ── TITULO ────────────────────────────────────
+st.title("🌡️💧 Monitor Inteligente")
 
-    <div class="hero-title">
-        🌡️💧 Monitor Inteligente
-    </div>
+st.subheader(
+    "💙 Visualiza los sensores de SmartKitchen en tiempo real desde Wokwi"
+)
 
-    <div class="hero-text">
-        Visualiza los sensores de SmartKitchen en tiempo real desde Wokwi 💙
-    </div>
+# ── INFORMACIÓN ───────────────────────────────
+st.info("""
+👩‍🍳 Panel de Monitoreo Inteligente
 
-</div>
-""", unsafe_allow_html=True)
+Esta sección permite visualizar la temperatura y humedad
+de la cocina inteligente simulada en Wokwi en tiempo real ✨
+""")
 
-# ── DESCRIPCIÓN ──────────────────────────────────────────
-st.markdown("""
-<div class="card">
+st.write("")
 
-<h3>👩‍🍳 Panel de Monitoreo Inteligente</h3>
-
-<p>
-Esta sección permite visualizar la temperatura y humedad de la cocina inteligente
-simulada en Wokwi en tiempo real ✨
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-# 📡 Datos MQTT
+# ── MQTT ──────────────────────────────────────
 BROKER = "broker.mqttdashboard.com"
 PORT = 1883
 TOPIC = "manuela_vallejo/smartkitchen"
 
-# Estados iniciales
+# ── ESTADOS ───────────────────────────────────
 if "temperatura" not in st.session_state:
     st.session_state["temperatura"] = "Esperando..."
 
 if "humedad" not in st.session_state:
     st.session_state["humedad"] = "Esperando..."
 
-# Callback MQTT
+# ── CALLBACK ──────────────────────────────────
 def mensaje_recibido(client, userdata, msg):
 
     try:
@@ -160,12 +99,13 @@ def mensaje_recibido(client, userdata, msg):
         if "Temp" in datos and "Hum" in datos:
 
             st.session_state["temperatura"] = f"{datos['Temp']} °C"
+
             st.session_state["humedad"] = f"{datos['Hum']} %"
 
-    except Exception:
+    except:
         pass
 
-# ── MÉTRICAS ────────────────────────────────────────────
+# ── MÉTRICAS ──────────────────────────────────
 c1, c2 = st.columns(2)
 
 with c1:
@@ -184,10 +124,9 @@ with c2:
 
 st.write("")
 
-# ── BOTÓN ACTUALIZAR ────────────────────────────────────
+# ── BOTÓN ─────────────────────────────────────
 if st.button(
     "🔄 Actualizar Lecturas de Wokwi",
-    type="primary",
     use_container_width=True
 ):
 
@@ -233,10 +172,7 @@ if st.button(
 
             if st.session_state["temperatura"] != "Esperando...":
 
-                st.toast(
-                    "¡Datos sincronizados desde Wokwi!",
-                    icon="📡"
-                )
+                st.success("📡 Datos sincronizados correctamente")
 
             else:
 
@@ -250,9 +186,7 @@ if st.button(
 
             st.error(f"Error de conexión: {e}")
 
-# ── FOOTER ──────────────────────────────────────────────
-st.markdown("""
-<div class="footer">
-    SmartKitchen © 2026 💙
-</div>
-""", unsafe_allow_html=True)
+# ── FOOTER ────────────────────────────────────
+st.write("---")
+
+st.caption("💙 SmartKitchen © 2026")
